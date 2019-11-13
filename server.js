@@ -1,39 +1,47 @@
 const express = require("express");
-
 const mongoose = require("mongoose");
-const routes = require("./routes");
+const bodyParser = require("body-parser");
+
+const passport = require("passport");
+
+
+const mission = require("./routes/api/mission");
+const users = require("./routes/api/users");
+
+
+
+
 const app = express();
-const PORT = process.env.PORT || 3001;
 
-// Define middleware here
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-// Serve up static assets (usually on heroku)
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
-}
-// Add routes, both API and view
-app.use(routes);
-
-// Database configuration with mongoose
-
-// If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
-
-mongoose.connect("mongodb://foodheros:foodheros1212@ds141228.mlab.com:41228/heroku_67bsl94b");
-
-
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/foodHeros";
-
-mongoose.connect(MONGODB_URI,
-    { useNewUrlParser: true }
+// Bodyparser middleware
+app.use(
+  bodyParser.urlencoded({
+    extended: false
+  })
 );
+app.use(bodyParser.json());
+// DB Config
+const db = require("./config/keys").mongoURI;
+// Connect to MongoDB
+mongoose
+  .connect(
+    db,
+    { useNewUrlParser: true }
+  )
+  .then(() => console.log("MongoDB successfully connected"))
+  .catch(err => console.log(err));
 
-var db = mongoose.connection;
+// Passport middleware
+app.use(passport.initialize());
+// Passport config
+require("./config/passport")(passport);
+// Routes
 
-db.on("error", function (error) {
-    console.log("Mongoose Error: ", error);
-});
+app.use("/api/mission", mission);
+app.use("/api/users", users);
 
-db.once("open", function () {
-    console.log("Mongoose connection successful.");
-});
+
+
+
+const port = process.env.PORT || 5000; // process.env.port is Heroku's port if you choose to deploy the app there
+app.listen(port, () => console.log(`Server up and running on port ${port} !`));

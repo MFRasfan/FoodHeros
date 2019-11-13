@@ -1,3 +1,5 @@
 module.exports = {
-  Book: require("./book")
-};
+    user: require("./User"),
+    mission: require("./mission"),
+    inventory: require("./inventory")
+  };
