@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import API from "../utils/api";
 import Container from "../components/Container";
-import MissionList from "../components/MissionList";
+import YourMission from "../components/YourMission";
 import Map2 from "../components/Map2";
 
 
 class Mission extends Component {
     state = {
-        missions: []
+        missions: [],
+        pos:{}
     };
 
     //when this component mounts, grab all Missions that were save to the database 
@@ -15,15 +16,34 @@ class Mission extends Component {
         API.getMissions()
             .then(res => this.setState({ missions: res.data }))
             .catch(err => console.log(err))
+        this.getCoordinates();
+
+       
+                
     };
+
+    getCoordinates(){
+
+        navigator.geolocation.getCurrentPosition( (position) => {
+            console.log(position)
+            this.setState({ pos: position })})
+    }
+
 
 
     render() {
         return (
-                <Container>
-                    <MissionList missions ={this.state.missions} />
-                    <Map2></Map2>
-                </Container>
+            <div className="container">
+                <div className="row">
+                    <div className="col s8 offset-s2">
+                        <h3 className="center">Current Mission:</h3>
+                        <Container>
+                            <YourMission missions ={this.state.missions} />
+                            <Map2 pos ={this.state.pos}/>
+                        </Container>
+                    </div>
+                </div>
+            </div>
             
         )
     }

@@ -8,20 +8,20 @@ import API from "../utils/api";
 
 class Donation extends Component {
   state = {
-    donations:[],
+    donations: [],
     usertype: "Recipient"
   };
 
   componentDidMount() {
-    API.getDonations()
+    API.getInventory()
     .then(res => this.setState({ donations: res.data }))
     .catch(err => console.log(err))
   };
   
-  onLogoutClick = e => {
-    e.preventDefault();
-    this.props.logoutUser();
-  };
+  // onLogoutClick = e => {
+  //   e.preventDefault();
+  //   this.props.logoutUser();
+  // };
   
   render() {
     console.log(this.state.usertype);
@@ -39,7 +39,7 @@ class Donation extends Component {
         </div>
         
         {/* Logout Button */}
-        <div className="row">
+        {/* <div className="row">
           <div className="col s8 offset-s2">
             <button
               style={{
@@ -55,7 +55,7 @@ class Donation extends Component {
             </button>
 
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }
@@ -63,11 +63,11 @@ class Donation extends Component {
 
 Donation.propTypes = {
   logoutUser: PropTypes.func.isRequired,
-  // auth: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
 const mapStateToProps = state => ({
-  // auth: state.auth,
+  auth: state.auth,
   errors: state.errors
 });
 export default connect(
